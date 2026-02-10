@@ -1,0 +1,39 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class SceneFader : MonoBehaviour
+{
+    private Image fadeImage;
+
+    void Awake()
+    {
+        fadeImage = GetComponent<Image>();
+    }
+
+    public IEnumerator FadeIn(float duration)
+    {
+        float timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, timer / duration);
+            fadeImage.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+        fadeImage.color = new Color(0, 0, 0, 0f); // Ensure it is fully clear
+    }
+
+    public IEnumerator FadeOut(float duration)
+    {
+        float timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, timer / duration);
+            fadeImage.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+        fadeImage.color = new Color(0, 0, 0, 1f); // Ensure it is fully black
+    }
+}
