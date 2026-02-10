@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     // State Management
     private enum PlayerState { Idle, Walking, Hurt }
     private PlayerState currentState;
+    private PlayerState previousState; // Track previous state to handle frame resets
 
     // Internal Variables
     private SpriteRenderer spriteRenderer;
@@ -42,8 +43,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         // Setup Rigidbody for 2D movement
-        rb.gravityScale = 1; // Set to 0 if this is a top-down game, 1 if side-scroller
-        rb.freezeRotation = true; // Prevent player from rolling around
+        rb.gravityScale = 1;
+        rb.freezeRotation = true;
     }
 
     private void Update()
@@ -51,42 +52,40 @@ public class PlayerController : MonoBehaviour
         // 1. Handle Input & Movement
         float moveInput = 0f;
 
-        // Check for Right Movement (D or Right Arrow)
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             moveInput = 1f;
         }
-        // Check for Left Movement (A or Left Arrow - assuming A is standard)
         else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             moveInput = -1f;
         }
-        // Note: If you strictly needed 'W' to move Left/Right, change KeyCode.A to KeyCode.W above.
 
         // 2. Determine State
         if (currentState != PlayerState.Hurt)
         {
-            // Move the player physically
             rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
             if (moveInput != 0)
             {
-                currentState = PlayerState.Walking;
+                ChangeState(PlayerState.Walking);
                 FlipSprite(moveInput);
             }
             else
             {
-                currentState = PlayerState.Idle;
-                rb.velocity = new Vector2(0, rb.velocity.y); // Stop sliding
+                ChangeState(PlayerState.Idle);
+                rb.velocity = new Vector2(0, rb.velocity.y);
             }
         }
         else
         {
-            // Logic for when player is hurt (stop moving briefly)
+            // Logic for when player is hurt
+            rb.velocity = new Vector2(0, rb.velocity.y); // Stop movement during hurt
             hurtTimer -= Time.deltaTime;
+
             if (hurtTimer <= 0)
             {
-                currentState = PlayerState.Idle; // Return to normal
+                ChangeState(PlayerState.Idle);
             }
         }
 
@@ -94,11 +93,20 @@ public class PlayerController : MonoBehaviour
         HandleAnimation();
     }
 
+    private void ChangeState(PlayerState newState)
+    {
+        if (currentState == newState) return;
+
+        currentState = newState;
+        // Reset animation index when switching states to avoid "Out of Bounds" errors
+        currentFrameIndex = 0;
+        animationTimer = 0f;
+    }
+
     private void HandleAnimation()
     {
         Sprite[] currentAnimationArray = null;
 
-        // Pick the correct array based on state
         switch (currentState)
         {
             case PlayerState.Idle:
@@ -112,7 +120,6 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        // Safety check: ensure we have sprites
         if (currentAnimationArray == null || currentAnimationArray.Length == 0) return;
 
         // Timer Logic
@@ -124,41 +131,43 @@ public class PlayerController : MonoBehaviour
             animationTimer -= secondsPerFrame;
             currentFrameIndex++;
 
-            // Loop back to start if we reach the end
             if (currentFrameIndex >= currentAnimationArray.Length)
             {
+                // If hurt, we usually don't loop the animation indefinitely 
+                // but for this simple logic, it will loop until the timer ends.
                 currentFrameIndex = 0;
             }
 
-            // Apply the sprite
             spriteRenderer.sprite = currentAnimationArray[currentFrameIndex];
         }
     }
 
     private void FlipSprite(float direction)
     {
-        // If moving RIGHT
         if (direction > 0 && !isFacingRight)
         {
             isFacingRight = true;
-            // Face normal (0 degrees)
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        // If moving LEFT
         else if (direction < 0 && isFacingRight)
         {
             isFacingRight = false;
-            // Face opposite (Flip 180 degrees on Y-Axis)
-            // This mirrors the Sprite AND the Flashlight perfectly!
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
 
-    // Call this method from other scripts (like a trap) to trigger the hurt anim
+    /// <summary>
+    /// Call this from an Enemy or Trap script: 
+    /// other.GetComponent<PlayerController>().TriggerHurt(0.4f);
+    /// </summary>
     public void TriggerHurt(float duration = 0.5f)
     {
+        // Don't restart the hurt state if already hurt (provides a tiny bit of I-frame logic)
+        if (currentState == PlayerState.Hurt) return;
+
         currentState = PlayerState.Hurt;
         hurtTimer = duration;
-        currentFrameIndex = 0; // Reset animation to start
+        currentFrameIndex = 0;
+        animationTimer = 0f;
     }
 }

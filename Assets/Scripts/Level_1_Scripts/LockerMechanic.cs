@@ -11,6 +11,9 @@ public class LockerMechanic : MonoBehaviour
     [SerializeField] private SpriteRenderer lockerRenderer;
     [SerializeField] private Sprite lockerClosedSprite;
     [SerializeField] private Sprite lockerOpenSprite;
+    [Tooltip("The 4 frames for the locker opening/closing animation")]
+    [SerializeField] private Sprite[] lockerAnimFrames;
+    [SerializeField] private float animFrameRate = 0.05f;
 
     [Header("Sanity System")]
     [SerializeField] private float maxSanity = 100f;
@@ -19,6 +22,7 @@ public class LockerMechanic : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private Image sanityFillImage;
     [SerializeField] private GameObject hidingIndicatorUI;
+    [SerializeField] private GameObject interactionPromptUI;
 
     [Header("Glitch Animation (Coded)")]
     [SerializeField] private Image glitchImageDisplay;
@@ -33,8 +37,8 @@ public class LockerMechanic : MonoBehaviour
     [SerializeField] private Sprite redEyeSprite;
 
     [Header("Hallucination Logic (NEW)")]
-    [SerializeField] private GameObject hallucinationEnemy; // Drag Hallucination GameObject here
-    [SerializeField] private float hallucinationThreshold = 30f; // Sanity level to trigger appearance
+    [SerializeField] private GameObject hallucinationEnemy;
+    [SerializeField] private float hallucinationThreshold = 30f;
 
     private bool isPlayerNearby = false;
     private bool isHiding = false;
@@ -45,6 +49,7 @@ public class LockerMechanic : MonoBehaviour
     private MonoBehaviour playerScript;
     private SpriteRenderer playerSprite;
     private Rigidbody2D playerRb;
+    private FlashlightSystem playerFlashlight;
 
     private void Start()
     {
@@ -53,16 +58,21 @@ public class LockerMechanic : MonoBehaviour
 
         if (hidingIndicatorUI != null) hidingIndicatorUI.SetActive(false);
         if (glitchImageDisplay != null) glitchImageDisplay.gameObject.SetActive(false);
+        if (interactionPromptUI != null) interactionPromptUI.SetActive(false);
 
         if (lockerRenderer != null && lockerClosedSprite != null)
             lockerRenderer.sprite = lockerClosedSprite;
 
-        // Ensure Hallucination starts OFF
         if (hallucinationEnemy != null) hallucinationEnemy.SetActive(false);
     }
 
     private void Update()
     {
+        if (interactionPromptUI != null)
+        {
+            interactionPromptUI.SetActive(isPlayerNearby && !isHiding);
+        }
+
         if (isPlayerNearby && playerObject != null && Input.GetKeyDown(interactKey))
         {
             if (isHiding) StartCoroutine(ExitLockerRoutine());
@@ -89,10 +99,8 @@ public class LockerMechanic : MonoBehaviour
             float sanityPercentage = currentSanity / maxSanity;
             sanityFillImage.fillAmount = sanityPercentage;
 
-            // NEW: Hallucination Trigger Logic
             if (hallucinationEnemy != null)
             {
-                // Appears if sanity is equal to or below the threshold (e.g., 30)
                 bool shouldShow = currentSanity <= hallucinationThreshold;
                 if (hallucinationEnemy.activeSelf != shouldShow)
                 {
@@ -100,25 +108,11 @@ public class LockerMechanic : MonoBehaviour
                 }
             }
 
-            if (sanityPercentage <= 0.5f)
-            {
-                sanityFillImage.color = warningColor;
-            }
-            else
-            {
-                sanityFillImage.color = healthyColor;
-            }
+            sanityFillImage.color = (sanityPercentage <= 0.5f) ? warningColor : healthyColor;
 
             if (eyeIconDisplay != null)
             {
-                if (sanityPercentage <= 0.3f)
-                {
-                    eyeIconDisplay.sprite = redEyeSprite;
-                }
-                else
-                {
-                    eyeIconDisplay.sprite = whiteEyeSprite;
-                }
+                eyeIconDisplay.sprite = (sanityPercentage <= 0.3f) ? redEyeSprite : whiteEyeSprite;
             }
         }
     }
@@ -136,15 +130,39 @@ public class LockerMechanic : MonoBehaviour
         }
     }
 
+    // New logic to play the 4-frame locker animation
+    private IEnumerator PlayLockerAnimation(bool opening)
+    {
+        if (lockerAnimFrames == null || lockerAnimFrames.Length == 0) yield break;
+
+        if (opening)
+        {
+            for (int i = 0; i < lockerAnimFrames.Length; i++)
+            {
+                lockerRenderer.sprite = lockerAnimFrames[i];
+                yield return new WaitForSeconds(animFrameRate);
+            }
+        }
+        else
+        {
+            for (int i = lockerAnimFrames.Length - 1; i >= 0; i--)
+            {
+                lockerRenderer.sprite = lockerAnimFrames[i];
+                yield return new WaitForSeconds(animFrameRate);
+            }
+        }
+    }
+
     private IEnumerator EnterLockerRoutine()
     {
-        if (lockerRenderer != null) lockerRenderer.sprite = lockerOpenSprite;
-        yield return new WaitForSeconds(0.2f);
+        // Play opening animation instead of just switching sprites
+        yield return StartCoroutine(PlayLockerAnimation(true));
+
+        yield return new WaitForSeconds(0.1f);
 
         isHiding = true;
 
         if (hidingIndicatorUI != null) hidingIndicatorUI.SetActive(true);
-
         if (glitchImageDisplay != null)
         {
             glitchImageDisplay.gameObject.SetActive(true);
@@ -153,36 +171,39 @@ public class LockerMechanic : MonoBehaviour
         }
 
         SetPlayerVisibility(false);
+        if (playerFlashlight != null) playerFlashlight.SetFlashlightHidden(true);
 
-        if (lockerRenderer != null) lockerRenderer.sprite = lockerClosedSprite;
+        // Close it after entering
+        yield return StartCoroutine(PlayLockerAnimation(false));
     }
 
     private IEnumerator ExitLockerRoutine()
     {
-        if (lockerRenderer != null) lockerRenderer.sprite = lockerOpenSprite;
+        // Play opening animation to let player out
+        yield return StartCoroutine(PlayLockerAnimation(true));
 
         if (hidingIndicatorUI != null) hidingIndicatorUI.SetActive(false);
-
         if (glitchImageDisplay != null)
         {
             glitchImageDisplay.gameObject.SetActive(false);
         }
 
         SetPlayerVisibility(true);
+        if (playerFlashlight != null) playerFlashlight.SetFlashlightHidden(false);
+
         isHiding = false;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
-        if (lockerRenderer != null) lockerRenderer.sprite = lockerClosedSprite;
+        // Final Close
+        yield return StartCoroutine(PlayLockerAnimation(false));
     }
 
     private void SetPlayerVisibility(bool isVisible)
     {
         if (playerObject == null) return;
-
         if (playerScript != null) playerScript.enabled = isVisible;
         if (playerSprite != null) playerSprite.enabled = isVisible;
-
         if (playerRb != null)
         {
             playerRb.velocity = Vector2.zero;
@@ -196,10 +217,10 @@ public class LockerMechanic : MonoBehaviour
         {
             isPlayerNearby = true;
             playerObject = collision.gameObject;
-            // Assuming your player script is named PlayerController
             playerScript = playerObject.GetComponent<MonoBehaviour>();
             playerSprite = playerObject.GetComponent<SpriteRenderer>();
             playerRb = playerObject.GetComponent<Rigidbody2D>();
+            playerFlashlight = playerObject.GetComponentInChildren<FlashlightSystem>();
         }
     }
 
@@ -214,7 +235,7 @@ public class LockerMechanic : MonoBehaviour
     public void ApplyExternalSanityDrain(float amount)
     {
         currentSanity -= amount;
-        if (currentSanity < 0) currentSanity = 0;
+        currentSanity = Mathf.Clamp(currentSanity, 0, maxSanity);
         UpdateSanityUI();
     }
 }

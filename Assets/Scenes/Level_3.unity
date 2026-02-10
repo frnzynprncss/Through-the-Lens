@@ -533,7 +533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &364394170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1343,10 +1343,13 @@ MonoBehaviour:
   lockerRenderer: {fileID: 1000239998}
   lockerClosedSprite: {fileID: 1930621580, guid: 5b95ae5d729c72644839baebf258b5b1, type: 3}
   lockerOpenSprite: {fileID: -2061726772, guid: 5b95ae5d729c72644839baebf258b5b1, type: 3}
+  lockerAnimFrames: []
+  animFrameRate: 0.05
   maxSanity: 100
   sanityDrainRate: 5
   sanityFillImage: {fileID: 806130623}
   hidingIndicatorUI: {fileID: 1536810993}
+  interactionPromptUI: {fileID: 0}
   glitchImageDisplay: {fileID: 0}
   glitchFrames: []
   frameRate: 0.1
@@ -1355,6 +1358,8 @@ MonoBehaviour:
   eyeIconDisplay: {fileID: 0}
   whiteEyeSprite: {fileID: 0}
   redEyeSprite: {fileID: 0}
+  hallucinationEnemy: {fileID: 0}
+  hallucinationThreshold: 30
 --- !u!61 &1000239997
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3030,8 +3035,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c940494e9b85bfc45ac7cd09c382ba98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  frameRate: 5
+  moveSpeed: 10
+  frameRate: 7
   idleSprites:
   - {fileID: -1032826051, guid: aef4bde1827406b4c9b147fdebf07cd3, type: 3}
   - {fileID: 2002376347, guid: aef4bde1827406b4c9b147fdebf07cd3, type: 3}
@@ -3199,6 +3204,7 @@ MonoBehaviour:
   drainRate: 3
   flickerThreshold: 30
   anxietyDrainRate: 5
+  sanityRegenRate: 3
   lightObject: {fileID: 1285455157}
   batteryFillImage: {fileID: 2069167903}
   sanitySystem: {fileID: 1000239996}

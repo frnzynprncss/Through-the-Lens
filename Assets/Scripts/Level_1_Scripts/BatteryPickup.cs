@@ -2,18 +2,23 @@ using UnityEngine;
 
 public class BatteryPickup : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    [SerializeField] private float rechargeAmount = 50f;
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // Check if the object we hit is the Player
-        if (collision.CompareTag("Player"))
+        // Check if the object that touched the battery is the Player
+        if (other.CompareTag("Player"))
         {
-            // Try to find the FlashlightSystem on the player
-            FlashlightSystem flashlight = collision.GetComponent<FlashlightSystem>();
+            // Look for the FlashlightSystem in the player's children
+            FlashlightSystem flashlight = other.GetComponentInChildren<FlashlightSystem>();
 
             if (flashlight != null)
             {
-                flashlight.Recharge();
-                Destroy(gameObject); // Remove battery from world
+                // Use the variable here! 
+                // We will create a new method in FlashlightSystem called AddBattery
+                flashlight.AddBattery(rechargeAmount);
+
+                Destroy(gameObject);
             }
         }
     }

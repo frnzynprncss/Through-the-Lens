@@ -13,53 +13,56 @@ public class FlashlightSystem : MonoBehaviour
     [SerializeField] private float flickerThreshold = 50f;
     [Tooltip("Extra sanity drain per second when light is flickering")]
     [SerializeField] private float anxietyDrainRate = 5f;
+    [Tooltip("Sanity regained per second when light is stable and ON")]
+    [SerializeField] private float sanityRegenRate = 3f; // NEW: Regain logic
 
     [Header("References")]
     [SerializeField] private GameObject lightObject;
     [SerializeField] private Image batteryFillImage;
-    [SerializeField] private LockerMechanic sanitySystem; // Drag your Locker/Sanity script here
+    [SerializeField] private LockerMechanic sanitySystem;
 
     private float currentBattery;
     private bool isOn = true;
+    private bool isForcedHidden = false;
 
     void Start()
     {
         currentBattery = maxBattery;
         UpdateUI();
 
-        // Auto-find sanity system if not assigned
         if (sanitySystem == null)
             sanitySystem = GetComponent<LockerMechanic>();
     }
 
     void Update()
     {
-        // Toggle light
-        if (Input.GetKeyDown(toggleKey) && currentBattery > 0)
+        if (!isForcedHidden && Input.GetKeyDown(toggleKey) && currentBattery > 0)
         {
             isOn = !isOn;
             lightObject.SetActive(isOn);
         }
 
-        // --- CASE 1: LIGHT IS ON ---
         if (isOn && currentBattery > 0)
         {
-            currentBattery -= drainRate * Time.deltaTime;
-            UpdateUI();
-
-            float batteryPercent = (currentBattery / maxBattery) * 100f;
-
-            if (batteryPercent <= flickerThreshold)
+            if (!isForcedHidden)
             {
-                HandleDynamicFlicker(batteryPercent);
-                ApplyAnxiety(); // Drain sanity because of flickering
-            }
-            else
-            {
-                if (!lightObject.activeSelf) lightObject.SetActive(true);
+                currentBattery -= drainRate * Time.deltaTime;
+                UpdateUI();
+
+                float batteryPercent = (currentBattery / maxBattery) * 100f;
+
+                if (batteryPercent <= flickerThreshold)
+                {
+                    HandleDynamicFlicker(batteryPercent);
+                    ApplyAnxiety(true); // Is flickering
+                }
+                else
+                {
+                    if (!lightObject.activeSelf) lightObject.SetActive(true);
+                    ApplyAnxiety(false); // Stable ON (Regen)
+                }
             }
 
-            // Auto-shutoff
             if (currentBattery <= 0)
             {
                 currentBattery = 0;
@@ -67,41 +70,52 @@ public class FlashlightSystem : MonoBehaviour
                 lightObject.SetActive(false);
             }
         }
-        // --- CASE 2: LIGHT IS OFF (Darkness Anxiety) ---
         else
         {
-            // If the player turned it off OR battery died
-            ApplyAnxiety();
+            ApplyAnxiety(false); // Light is OFF (Darkness drain)
         }
+    }
+
+    public void SetFlashlightHidden(bool hide)
+    {
+        isForcedHidden = hide;
+        if (hide) lightObject.SetActive(false);
+        else lightObject.SetActive(isOn);
     }
 
     private void HandleDynamicFlicker(float percent)
     {
-        // Math: As percent goes to 0, the threshold gets lower, making 'Random.value > threshold' happen more often.
-        // At 50% battery, threshold is 0.98 (rare flicker)
-        // At 5% battery, threshold is 0.85 (chaotic flicker)
         float threshold = Mathf.Lerp(0.80f, 0.99f, percent / flickerThreshold);
-
         if (Random.value > threshold)
         {
             lightObject.SetActive(!lightObject.activeSelf);
         }
     }
 
-    private void ApplyAnxiety()
+    private void ApplyAnxiety(bool isFlickering)
     {
-        if (sanitySystem != null)
+        if (sanitySystem == null) return;
+
+        float finalEffect = 0;
+
+        if (isOn && !isFlickering)
         {
-            float finalDrain = anxietyDrainRate;
-
-            // Optional: Make darkness even scarier than flickering?
-            if (!isOn)
-            {
-                finalDrain = anxietyDrainRate * 1.5f; // 50% faster drain in total darkness
-            }
-
-            sanitySystem.ApplyExternalSanityDrain(finalDrain * Time.deltaTime);
+            // CASE 1: Light is stable and ON -> REGAIN SANITY
+            // We pass a negative value to "drain" to act as a regain
+            finalEffect = -sanityRegenRate;
         }
+        else if (isOn && isFlickering)
+        {
+            // CASE 2: Light is flickering -> NORMAL DRAIN
+            finalEffect = anxietyDrainRate;
+        }
+        else
+        {
+            // CASE 3: Light is OFF -> HEAVY DRAIN
+            finalEffect = anxietyDrainRate * 1.5f;
+        }
+
+        sanitySystem.ApplyExternalSanityDrain(finalEffect * Time.deltaTime);
     }
 
     private void UpdateUI()
@@ -115,6 +129,24 @@ public class FlashlightSystem : MonoBehaviour
         currentBattery = maxBattery;
         UpdateUI();
         isOn = true;
-        lightObject.SetActive(true);
+        if (!isForcedHidden) lightObject.SetActive(true);
+    }
+
+    public void AddBattery(float amount)
+    {
+        currentBattery += amount;
+
+        // Ensure we don't go over the maximum battery limit
+        if (currentBattery > maxBattery)
+            currentBattery = maxBattery;
+
+        UpdateUI();
+
+        // If the light was dead (off), this turns it back on automatically
+        if (currentBattery > 0 && !isOn)
+        {
+            isOn = true;
+            if (!isForcedHidden) lightObject.SetActive(true);
+        }
     }
 }
