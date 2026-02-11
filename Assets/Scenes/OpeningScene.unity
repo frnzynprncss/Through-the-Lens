@@ -342,7 +342,6 @@ GameObject:
   - component: {fileID: 314268927}
   - component: {fileID: 314268929}
   - component: {fileID: 314268928}
-  - component: {fileID: 314268930}
   m_Layer: 0
   m_Name: Entrance
   m_TagString: Untagged
@@ -423,18 +422,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &314268930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314268926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8545be27318b494cb792f0cf7e25d48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &430633254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,7 +1365,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!225 &1511049414
 CanvasGroup:
   m_ObjectHideFlags: 0

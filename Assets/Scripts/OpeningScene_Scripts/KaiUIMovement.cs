@@ -27,10 +27,9 @@ public class KaiUIMovement : MonoBehaviour
 
         if (moveX != 0)
         {
-            // FIX: Multiply 0.3f (your scale) by the direction (1 or -1)
-            float flipScale = moveX > 0 ? 1f : -1f;
-            rectTransform.localScale = new Vector3(flipScale, 1f, 1f);
-
+            // Use 0.3f because that is the scale in your Inspector
+            float xSide = moveX > 0 ? 1f : -1f;
+            rectTransform.localScale = new Vector3(xSide, 1f, 1f);
             HandleAnimation(walkFrames);
         }
         else

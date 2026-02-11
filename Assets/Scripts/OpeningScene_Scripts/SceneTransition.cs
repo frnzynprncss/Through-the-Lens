@@ -10,7 +10,7 @@ public class SceneTransition : MonoBehaviour
 
     private void Awake()
     {
-        // Start completely black and blocking clicks
+        // Start black
         if (fadeGroup != null)
         {
             fadeGroup.alpha = 1;
@@ -18,7 +18,6 @@ public class SceneTransition : MonoBehaviour
         }
     }
 
-    // This is called by IntroManager Start
     public IEnumerator FadeIn()
     {
         float timer = 0;
@@ -29,10 +28,9 @@ public class SceneTransition : MonoBehaviour
             yield return null;
         }
         fadeGroup.alpha = 0;
-        fadeGroup.blocksRaycasts = false; // Allow playing the game
+        fadeGroup.blocksRaycasts = false;
     }
 
-    // This is called by the Level Trigger
     public void StartTransition(string sceneName)
     {
         StartCoroutine(FadeAndLoad(sceneName));
@@ -40,7 +38,7 @@ public class SceneTransition : MonoBehaviour
 
     private IEnumerator FadeAndLoad(string sceneName)
     {
-        fadeGroup.blocksRaycasts = true; // Stop player input during fade
+        fadeGroup.blocksRaycasts = true;
         float timer = 0;
         while (timer < fadeDuration)
         {

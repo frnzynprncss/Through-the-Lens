@@ -16,7 +16,7 @@ MonoBehaviour:
   - characterName: Clara
     sentence: Sure ka na talaga dito?
     expressionSprite: {fileID: 21300000, guid: 360e6c79440160e4b9cd0b876037ca5f, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: 4ba921a5b1ab0bd4e9a0f8b6f06b56e5, type: 3}
   - characterName: Clara
     sentence: Marami naman ibang lugar na medyo ayos pa, pero iba pakiramdam ko dito
       eh
@@ -25,19 +25,19 @@ MonoBehaviour:
   - characterName: Kai
     sentence: Chill ka lang Clara
     expressionSprite: {fileID: 21300000, guid: a0a6d571892b08249aa65be7c98512c4, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: d5ccf321cfe8e794e91649c52e27545d, type: 3}
   - characterName: Kai
     sentence: Ako naman papasok sa loob
     expressionSprite: {fileID: 21300000, guid: 80948e4660b07bd4b83fa141838efbcd, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: d361d45162cdddd44b353c41739c5e3c, type: 3}
   - characterName: Kai
     sentence: plus mas nakakatakot na lugar, mas papanoorin ng tao
     expressionSprite: {fileID: 21300000, guid: 7ef15287f68287b4090b0e861563b1e8, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: 4686e9df1a88fdb40a14f9f9a5cd4aa5, type: 3}
   - characterName: Clara
     sentence: Sabagay...
     expressionSprite: {fileID: 21300000, guid: d2d743566343cf1458a59c41dc77aa4b, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: c53b89e305ac5f64c82ed565ea4a3a25, type: 3}
   - characterName: Clara
     sentence: Pero balik ka lang sa isang oras ha, baka may mangyari sayo sa loob
     expressionSprite: {fileID: 21300000, guid: 9204e10c0ec78674191b76c6a89fc6b4, type: 3}
@@ -45,11 +45,11 @@ MonoBehaviour:
   - characterName: Kai
     sentence: Oki doki!
     expressionSprite: {fileID: 21300000, guid: 664cdc42b9f71f34297340468b9a6664, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: a05dbf8787c0c8141a76b4b18c03f487, type: 3}
   - characterName: Clara
     sentence: Hintayin nalang kita dito sa labas, ingat ka ha
     expressionSprite: {fileID: 21300000, guid: d211fc25455bfc640b2e9f642b259b1b, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: bc67ab30251a28547a8e38c981d28715, type: 3}
   - characterName: Kai
     sentence: (smiles)
     expressionSprite: {fileID: 21300000, guid: 7984534b2d1a54242af552b3860202d4, type: 3}

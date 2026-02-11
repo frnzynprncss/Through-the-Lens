@@ -15,8 +15,8 @@ public class IntroManager : MonoBehaviour
     public GameObject kaiUIPortrait;
 
     [Header("World Characters (Gameplay)")]
-    public GameObject claraNPC;       // The pixel chibi Clara
-    public GameObject kaiPlayer;      // The pixel chibi Kai
+    public GameObject claraNPC;
+    public GameObject kaiPlayer;
 
     [Header("Settings & Data")]
     public IntroSceneData sceneData;
@@ -27,7 +27,6 @@ public class IntroManager : MonoBehaviour
     public MovementTutorial tutorialScript;
     public SceneTransition transitionScript;
 
-    //Audio Source
     [Header("Audio")]
     public AudioSource voiceSource;
 
@@ -35,29 +34,27 @@ public class IntroManager : MonoBehaviour
     private Coroutine typingCoroutine;
     private bool isTyping = false;
 
-    // We use IEnumerator Start to wait for the Fade In before starting dialogue
     IEnumerator Start()
     {
-        // Hide dialogue UI initially
-        dialogueBox.SetActive(false);
+        if (dialogueBox) dialogueBox.SetActive(false);
+        if (claraNPC) claraNPC.SetActive(false);
+        if (kaiPlayer) kaiPlayer.SetActive(false);
+        if (kaiMoveScript) kaiMoveScript.canMove = false;
 
-        // Trigger the Fade In from the SceneTransition script
         if (transitionScript != null)
         {
             yield return StartCoroutine(transitionScript.FadeIn());
         }
 
-        // Only after the fade is done, show the dialogue
         if (sceneData != null && sceneData.lines.Length > 0)
         {
-            dialogueBox.SetActive(true);
+            if (dialogueBox) dialogueBox.SetActive(true);
             DisplayLine();
         }
     }
 
     void Update()
     {
-        // Progress dialogue on Click or Space
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {
             if (isTyping)
@@ -91,17 +88,27 @@ public class IntroManager : MonoBehaviour
         var line = sceneData.lines[currentIndex];
         nameText.text = line.characterName;
 
-        // ... (keep your existing portrait and sprite switching logic here) ...
+        // Safety check character name
+        bool isClara = line.characterName.Trim().ToLower() == "clara";
 
-        // VOICE OVER LOGIC
+        // ACTIVATE PORTRAITS - ONLY if they are assigned in Inspector
+        if (claraUIPortrait != null) claraUIPortrait.SetActive(isClara);
+        if (kaiUIPortrait != null) kaiUIPortrait.SetActive(!isClara);
+
+        // Update the sprite
+        if (isClara && claraUIPortrait != null)
+            claraUIPortrait.GetComponent<Image>().sprite = line.expressionSprite;
+        else if (!isClara && kaiUIPortrait != null)
+            kaiUIPortrait.GetComponent<Image>().sprite = line.expressionSprite;
+
+        // Voice Over
         if (voiceSource != null && line.voiceClip != null)
         {
-            voiceSource.Stop(); // Stop the previous voice line
+            voiceSource.Stop();
             voiceSource.clip = line.voiceClip;
             voiceSource.Play();
         }
 
-        // Typewriter effect
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeText(line.sentence));
     }
@@ -110,31 +117,24 @@ public class IntroManager : MonoBehaviour
     {
         isTyping = true;
         dialogueText.text = "";
-
         foreach (char letter in fullText.ToCharArray())
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(typingSpeed);
         }
-
         isTyping = false;
     }
 
     void EndIntro()
     {
-        // Hide UI
-        dialogueBox.SetActive(false);
-        claraUIPortrait.SetActive(false);
-        kaiUIPortrait.SetActive(false);
+        if (dialogueBox) dialogueBox.SetActive(false);
+        if (claraUIPortrait) claraUIPortrait.SetActive(false);
+        if (kaiUIPortrait) kaiUIPortrait.SetActive(false);
 
-        // Show Gameplay Characters
-        claraNPC.SetActive(true);
-        kaiPlayer.SetActive(true);
+        if (claraNPC) claraNPC.SetActive(true);
+        if (kaiPlayer) kaiPlayer.SetActive(true);
 
-        // Enable Movement & Tutorial
-        kaiMoveScript.canMove = true;
+        if (kaiMoveScript) kaiMoveScript.canMove = true;
         if (tutorialScript != null) tutorialScript.ShowTutorial();
-
-        Debug.Log("Intro Finished - Gameplay Started");
     }
 }
