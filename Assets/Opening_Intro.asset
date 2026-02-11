@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 611dbea349e353040a096af35db1e171, type: 3}
+  m_Name: Opening_Intro
+  m_EditorClassIdentifier: 
+  lines:
+  - characterName: Clara
+    sentence: Sure ka na talaga dito?
+    expressionSprite: {fileID: 21300000, guid: 360e6c79440160e4b9cd0b876037ca5f, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Clara
+    sentence: Marami naman ibang lugar na medyo ayos pa, pero iba pakiramdam ko dito
+      eh
+    expressionSprite: {fileID: 21300000, guid: 9204e10c0ec78674191b76c6a89fc6b4, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Kai
+    sentence: Chill ka lang Clara
+    expressionSprite: {fileID: 21300000, guid: a0a6d571892b08249aa65be7c98512c4, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Kai
+    sentence: Ako naman papasok sa loob
+    expressionSprite: {fileID: 21300000, guid: 80948e4660b07bd4b83fa141838efbcd, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Kai
+    sentence: plus mas nakakatakot na lugar, mas papanoorin ng tao
+    expressionSprite: {fileID: 21300000, guid: 7ef15287f68287b4090b0e861563b1e8, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Clara
+    sentence: Sabagay...
+    expressionSprite: {fileID: 21300000, guid: d2d743566343cf1458a59c41dc77aa4b, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Clara
+    sentence: Pero balik ka lang sa isang oras ha, baka may mangyari sayo sa loob
+    expressionSprite: {fileID: 21300000, guid: 9204e10c0ec78674191b76c6a89fc6b4, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Kai
+    sentence: Oki doki!
+    expressionSprite: {fileID: 21300000, guid: 664cdc42b9f71f34297340468b9a6664, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Clara
+    sentence: Hintayin nalang kita dito sa labas, ingat ka ha
+    expressionSprite: {fileID: 21300000, guid: d211fc25455bfc640b2e9f642b259b1b, type: 3}
+    voiceClip: {fileID: 0}
+  - characterName: Kai
+    sentence: (smiles)
+    expressionSprite: {fileID: 21300000, guid: 7984534b2d1a54242af552b3860202d4, type: 3}
+    voiceClip: {fileID: 0}
