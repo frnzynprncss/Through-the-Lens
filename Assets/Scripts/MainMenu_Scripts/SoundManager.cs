@@ -1,30 +1,32 @@
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using System;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager Instance;
+    public static SoundManager instance;
 
-    [Header("Mixer Group")]
-    [SerializeField] private AudioMixerGroup musicGroup;
-    [SerializeField] private AudioMixerGroup sfxGroup;
+    [Header("Audio Source")]
+    [SerializeField] AudioSource musicSource;
+    [SerializeField] AudioSource SFXSource;
 
-    [Header("Audio Sources")]
-    [SerializeField] private AudioSource musicSource;
-    [SerializeField] private AudioSource sfxSource;
+    [Header("Audio Clip")]
+    public AudioClip mainmenu_music;
+    public AudioClip ingame_music;
+    public AudioClip buttonselect;
+    public AudioClip flashlight;
+    public AudioClip locker;
+    public AudioClip hallucination;
+    public AudioClip chanak;
+    public AudioClip creature;
+    public AudioClip creature_footsteps;
 
-    [Header("Audio Clips")]
-    public AudioClip mainMenuBGM;
-    public AudioClip inGameBGM;
-    public AudioClip buttonSelect, flashlight, locker, hallucination;
-
-    void Awake()
+    private void Awake()
     {
-        // Keep this object alive across scenes
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -33,16 +35,72 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // LOAD SAVED VOLUME SETTINGS
+        // We use '1f' (full volume) as the default if no save exists yet.
+        musicSource.volume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        SFXSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        // Start the Main Menu music
+        PlayMusic(mainmenu_music);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainGame" || scene.name == "Practice")
+        {
+            PlayMusic(ingame_music);
+        }
+        else if (scene.name == "GameTitle" || scene.name == "Lobby" || scene.name == "PlayerSelect")
+        {
+            if (musicSource.clip != mainmenu_music)
+            {
+                PlayMusic(mainmenu_music);
+            }
+        }
+    }
+
     public void PlayMusic(AudioClip clip)
     {
+        if (musicSource.clip == clip) return;
         musicSource.clip = clip;
-        musicSource.loop = true;
         musicSource.Play();
     }
 
     public void PlaySFX(AudioClip clip)
     {
-        // PlayOneShot allows multiple sounds to overlap without cutting off
-        sfxSource.PlayOneShot(clip);
+        SFXSource.PlayOneShot(clip);
+    }
+
+    public void PlayButtonSound()
+    {
+        SFXSource.PlayOneShot(buttonselect);
+    }
+
+    // --- NEW VOLUME CONTROLS ---
+
+    public void SetMusicVolume(float volume)
+    {
+        musicSource.volume = volume;
+        // Save the setting instantly
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        SFXSource.volume = volume;
+        // Save the setting instantly
+        PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 }
