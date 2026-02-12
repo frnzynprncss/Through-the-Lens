@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     [Header("Flashlight")]
     [SerializeField] private Transform flashlightTransform;
 
+    public bool isHiding = false;
+
     // State Management
     private enum PlayerState { Idle, Walking, Hurt }
     private PlayerState currentState;
@@ -91,6 +93,14 @@ public class PlayerController : MonoBehaviour
 
         // 3. Play Animation
         HandleAnimation();
+
+        if (isHiding)
+        {
+            rb.velocity = Vector2.zero;
+            ChangeState(PlayerState.Idle);
+            return;
+        }
+
     }
 
     private void ChangeState(PlayerState newState)

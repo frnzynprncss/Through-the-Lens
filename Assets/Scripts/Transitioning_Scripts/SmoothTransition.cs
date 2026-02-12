@@ -19,7 +19,8 @@ public class SmoothTransition : MonoBehaviour
     public float waitBeforeLoad = 2f;
 
     [Header("Audio")]
-    public string soundName = "LevelExit_Creak"; // Name in your AudioManager
+    // NEW: Drag your .wav file directly into this slot in the Inspector
+    [SerializeField] private AudioClip transitionSound;
 
     private bool hasTriggered = false;
 
@@ -34,10 +35,10 @@ public class SmoothTransition : MonoBehaviour
 
     private IEnumerator SequenceRoutine()
     {
-        // 1. Play exit sound (e.g., a heavy door creaking)
-        if (AudioManager.instance != null && !string.IsNullOrEmpty(soundName))
+        // 1. Play the audio clip directly via SoundManager
+        if (transitionSound != null && SoundManager.instance != null)
         {
-            AudioManager.instance.Play(soundName);
+            SoundManager.instance.PlaySFX(transitionSound);
         }
 
         // 2. Show Dialogue Box
@@ -54,7 +55,7 @@ public class SmoothTransition : MonoBehaviour
         // 4. Wait for player to process the move
         yield return new WaitForSeconds(waitBeforeLoad);
 
-        // 5. Hide Dialogue (Optional, as the scene will change)
+        // 5. Hide Dialogue
         dialogueBox.SetActive(false);
 
         // 6. Load the Next Level

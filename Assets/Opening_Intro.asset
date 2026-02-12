@@ -21,7 +21,7 @@ MonoBehaviour:
     sentence: Marami naman ibang lugar na medyo ayos pa, pero iba pakiramdam ko dito
       eh
     expressionSprite: {fileID: 21300000, guid: 9204e10c0ec78674191b76c6a89fc6b4, type: 3}
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: a8ebc93f8fc63ff43b4d213162b9d3f7, type: 3}
   - characterName: Kai
     sentence: Chill ka lang Clara
     expressionSprite: {fileID: 21300000, guid: a0a6d571892b08249aa65be7c98512c4, type: 3}

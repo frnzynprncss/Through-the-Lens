@@ -777,8 +777,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1709214134}
   m_HandleRect: {fileID: 1709214133}
   m_Direction: 2
-  m_Value: 0.99999976
-  m_Size: 0.49808377
+  m_Value: 0.9999998
+  m_Size: 0.42059156
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2668,7 +2668,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.00013788806}
-  m_SizeDelta: {x: 0, y: 1112.97}
+  m_SizeDelta: {x: 0, y: 1318.03}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1049062565
 MonoBehaviour:
@@ -2692,7 +2692,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "GAME DEVELOPER\nFranzyn Princess Gimeno\n\nVISUAL DESIGNER\nJerome Flores 
     \n\nBACKGROUND/ENVIRONMENT ARTIST\nIra Nicole Moll\nCathrice Betchayda     \n\nSPRITE
-    ARTIST AND ANIMATOR\nRoeden Vargas\n\nUI DESIGNER AND GAME DESIGNER\nJustin Aguinaldo\n\n"
+    ARTIST AND ANIMATOR\nRoeden Vargas\n\nUI DESIGNER AND GAME DESIGNER\nJustin Aguinaldo\n\nVOICE
+    OVER\nNays Ecalner - Kai\nFranzyn Princess Gimeno - Clara"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fbf4c97c72dc19a4ea0602320ecb2a2b, type: 2}
   m_sharedMaterial: {fileID: 4490304980052626616, guid: fbf4c97c72dc19a4ea0602320ecb2a2b, type: 2}
@@ -3882,6 +3883,8 @@ MonoBehaviour:
   chanak: {fileID: 8300000, guid: e47a5d16f062241458f041100a0d1e22, type: 3}
   creature: {fileID: 8300000, guid: bbc38eba3b6b1d344b31a159da307dc3, type: 3}
   creature_footsteps: {fileID: 8300000, guid: 11f873dde52caa84c9b56b6002e227ec, type: 3}
+  playerHurt: {fileID: 8300000, guid: 43a17d4c3bacfbc47bd760e4c34233c4, type: 3}
+  gameOver: {fileID: 8300000, guid: 1e696bcc0f45ef141a821059264e26b3, type: 3}
 --- !u!4 &1391521182
 Transform:
   m_ObjectHideFlags: 0
@@ -5408,7 +5411,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 469403733}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5019161}
+  m_AnchorMin: {x: 0, y: 0.57940835}
   m_AnchorMax: {x: 1, y: 0.9999999}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}

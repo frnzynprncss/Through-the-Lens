@@ -41,8 +41,8 @@ public class LockerMechanic : MonoBehaviour
     [SerializeField] private float hallucinationThreshold = 30f;
 
     private bool isPlayerNearby = false;
-    private bool isHiding = false;
-    private float currentSanity;
+    public bool isHiding { get; private set; } = false;
+    public float currentSanity { get; private set; }
     private int currentFrame;
 
     private GameObject playerObject;
@@ -50,6 +50,7 @@ public class LockerMechanic : MonoBehaviour
     private SpriteRenderer playerSprite;
     private Rigidbody2D playerRb;
     private FlashlightSystem playerFlashlight;
+
 
     private void Start()
     {

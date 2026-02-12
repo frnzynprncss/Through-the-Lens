@@ -21,6 +21,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip chanak;
     public AudioClip creature;
     public AudioClip creature_footsteps;
+    public AudioClip playerHurt;
+    public AudioClip gameOver;
 
     private void Awake()
     {
@@ -58,11 +60,11 @@ public class SoundManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainGame" || scene.name == "Practice")
+        if (scene.name == "Level_1" || scene.name == "OpeningScene" || scene.name == "Level_2" || scene.name == "Level_3")
         {
             PlayMusic(ingame_music);
         }
-        else if (scene.name == "GameTitle" || scene.name == "Lobby" || scene.name == "PlayerSelect")
+        else if (scene.name == "MainMenu")
         {
             if (musicSource.clip != mainmenu_music)
             {

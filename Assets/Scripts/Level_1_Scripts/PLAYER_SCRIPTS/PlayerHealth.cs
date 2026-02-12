@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.SceneManagement; // To reload scene on death
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -10,8 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public float currentHealth;
 
     [Header("UI References")]
-    public Image healthFillImage; // Assign a health bar UI image
-    public GameObject deathScreen; // Assign your Game Over UI panel
+    public Image healthFillImage;
 
     [Header("Damage Visuals")]
     public float flashDuration = 0.1f;
@@ -27,7 +25,6 @@ public class PlayerHealth : MonoBehaviour
         if (sr != null) originalColor = sr.color;
 
         UpdateHealthUI();
-        if (deathScreen != null) deathScreen.SetActive(false);
     }
 
     public void TakeDamage(float amount)
@@ -40,8 +37,10 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
         StartCoroutine(DamageFlash());
 
-        // Play damage sound via your AudioManager
-        if (AudioManager.instance != null) AudioManager.instance.Play("PlayerHurt");
+        if (SoundManager.instance != null && SoundManager.instance.playerHurt != null)
+        {
+            SoundManager.instance.PlaySFX(SoundManager.instance.playerHurt);
+        }
 
         if (currentHealth <= 0)
         {
@@ -61,7 +60,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (sr != null)
         {
-            sr.color = Color.red; // Flash red when hit
+            sr.color = Color.red;
             yield return new WaitForSeconds(flashDuration);
             sr.color = originalColor;
         }
@@ -72,20 +71,20 @@ public class PlayerHealth : MonoBehaviour
         isDead = true;
         Debug.Log("Kai has fallen...");
 
-        // Disable movement (Assuming your script is named PlayerController)
+        // Disable movement
         var controller = GetComponent<PlayerController>();
         if (controller != null) controller.enabled = false;
 
-        // Show Death Screen
-        if (deathScreen != null) deathScreen.SetActive(true);
+        // TELL GAMEMANAGER TO SHOW THE UI
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.ShowDeathScreen();
+        }
 
-        // Optional: Trigger a "Game Over" sound
-        if (AudioManager.instance != null) AudioManager.instance.Play("GameOver");
-    }
-
-    // Call this from a "Restart" button on your Death Screen
-    public void RestartLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // Play Game Over Sound
+        if (SoundManager.instance != null && SoundManager.instance.gameOver != null)
+        {
+            SoundManager.instance.PlaySFX(SoundManager.instance.gameOver);
+        }
     }
 }
