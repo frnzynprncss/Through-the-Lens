@@ -161,13 +161,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a525509aa534d74f871256186d86a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crawlSpeed: 6
+  crawlSpeed: 10
   jumpSpeed: 12
   spawnIntervalMin: 10
   spawnIntervalMax: 25
-  passByDistance: 0
+  lungeDistance: 0.5
+  damageValue: 20
+  audioSource: {fileID: 0}
   spawnScreech: {fileID: 0}
+  lungeScreech: {fileID: 0}
   crawlFrames:
   - {fileID: 1906725494, guid: 45b7b2bd1befff2499aa1cb449d18727, type: 3}
   - {fileID: -433306193, guid: 45b7b2bd1befff2499aa1cb449d18727, type: 3}
   animSpeed: 0.08
+  dialogueTriggerDistance: 3
