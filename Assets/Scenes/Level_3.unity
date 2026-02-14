@@ -658,7 +658,7 @@ Transform:
   m_GameObject: {fileID: 164239054}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100.06, y: -4.4, z: 0}
+  m_LocalPosition: {x: 97, y: -4.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3471,7 +3471,7 @@ MonoBehaviour:
   logDisplayImage: {fileID: 654193896}
   dialogueContent: 'Kai: Grabe, kala ko normal na ospital lang ito, asylum pala'
   dialogueText: {fileID: 261580477}
-  logAudio: {fileID: 0}
+  logAudio: {fileID: 8300000, guid: 30b0d0a57eeed354a8f67efee1f1130e, type: 3}
   fadeSpeed: 5
   scaleSpeed: 10
   typeSpeed: 0.05
@@ -6265,7 +6265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineToSay: Hello?
-  dialogueAudio: {fileID: 8300000, guid: 8ffea0f1f62b7184898eed57d8a00662, type: 3}
+  dialogueAudio: {fileID: 8300000, guid: 871552babd33ba941a08c773ab313d11, type: 3}
   expressionA: {fileID: 21300000, guid: 619059a68d60211409f41b72517a270d, type: 3}
   expressionB: {fileID: 0}
   useExpressionB: 0
@@ -6827,7 +6827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineToSay: Aalis na po ako
-  dialogueAudio: {fileID: 8300000, guid: 8ffea0f1f62b7184898eed57d8a00662, type: 3}
+  dialogueAudio: {fileID: 8300000, guid: 85e8ba6a58f14704cb3f4212f572bc15, type: 3}
   expressionA: {fileID: 21300000, guid: 3e32ee4ffa212784a8a75dd3794d233c, type: 3}
   expressionB: {fileID: 21300000, guid: 4a1f14104e97e5f4fae39338265ea0a1, type: 3}
   useExpressionB: 0

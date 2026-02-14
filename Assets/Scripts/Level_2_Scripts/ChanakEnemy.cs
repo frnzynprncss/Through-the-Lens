@@ -56,7 +56,6 @@ public class ChanakEnemy : MonoBehaviour
 
     void Update()
     {
-        // If game is paused, we don't process horizontal movement
         if (Time.timeScale == 0 && !isLunging) return;
 
         if (Input.GetKeyDown(KeyCode.P) && !isHunting)
@@ -85,7 +84,7 @@ public class ChanakEnemy : MonoBehaviour
         while (true)
         {
             yield return new WaitForSecondsRealtime(Random.Range(spawnIntervalMin, spawnIntervalMax));
-            if (!isHunting) DoSpawn();
+            if (!isHunting && !isLunging) DoSpawn();
         }
     }
 
@@ -98,7 +97,7 @@ public class ChanakEnemy : MonoBehaviour
         float spawnSide = Random.value > 0.5f ? 8f : -8f;
         transform.position = new Vector3(player.position.x + spawnSide, player.position.y + 4.5f, 0);
 
-        // Ceiling flip
+        // --- FIX 1: Ensure it starts flipped UPWARD for ceiling crawl ---
         spriteRenderer.flipY = true;
 
         if (audioSource != null && spawnScreech != null)
@@ -109,24 +108,12 @@ public class ChanakEnemy : MonoBehaviour
     {
         Vector3 targetPos = new Vector3(player.position.x, transform.position.y, 0);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, crawlSpeed * Time.deltaTime);
-        spriteRenderer.flipX = (player.position.x < transform.position.x);
-    }
 
-    void CheckForDialogue()
-    {
-        if (!hasPlayedProximityDialogue && player != null)
-        {
-            float dist = Vector2.Distance(transform.position, player.position);
-            if (dist <= dialogueTriggerDistance)
-            {
-                hasPlayedProximityDialogue = true;
-                DialogueTrigger proximityTrigger = GetComponent<DialogueTrigger>();
-                if (proximityTrigger != null && NarrativeEngine.Instance != null)
-                {
-                    NarrativeEngine.Instance.PlayLine(proximityTrigger.lineToSay, null, null);
-                }
-            }
-        }
+        // Face the player horizontally while crawling
+        spriteRenderer.flipX = (player.position.x < transform.position.x);
+
+        // --- FIX 2: Reinforce ceiling flip while hunting ---
+        spriteRenderer.flipY = true;
     }
 
     void CheckForLunge()
@@ -145,10 +132,10 @@ public class ChanakEnemy : MonoBehaviour
         if (audioSource != null && lungeScreech != null)
             audioSource.PlayOneShot(lungeScreech);
 
-        yield return new WaitForSecondsRealtime(0.1f);
-
-        // Flip back to normal feet-down orientation for the attack
+        // --- FIX 3: Flip downwards IMMEDIATELY when the lunge starts ---
         spriteRenderer.flipY = false;
+
+        yield return new WaitForSecondsRealtime(0.1f);
 
         Vector3 startPos = transform.position;
         Vector3 endPos = new Vector3(player.position.x, player.position.y, 0);
@@ -156,7 +143,6 @@ public class ChanakEnemy : MonoBehaviour
 
         while (t < 1)
         {
-            // Use unscaledDeltaTime so the attack doesn't "freeze" mid-air during dialogue
             t += Time.unscaledDeltaTime * jumpSpeed;
             transform.position = Vector3.Lerp(startPos, endPos, t);
             yield return null;
@@ -173,6 +159,7 @@ public class ChanakEnemy : MonoBehaviour
         isLunging = false;
     }
 
+    // ... Rest of your methods (HandleAnimation, CheckForDialogue, etc.) remain the same
     void HandleAnimation()
     {
         if (crawlFrames.Length == 0) return;
@@ -182,6 +169,23 @@ public class ChanakEnemy : MonoBehaviour
             animTimer = 0;
             currentFrame = (currentFrame + 1) % crawlFrames.Length;
             spriteRenderer.sprite = crawlFrames[currentFrame];
+        }
+    }
+
+    void CheckForDialogue()
+    {
+        if (!hasPlayedProximityDialogue && player != null)
+        {
+            float dist = Vector2.Distance(transform.position, player.position);
+            if (dist <= dialogueTriggerDistance)
+            {
+                hasPlayedProximityDialogue = true;
+                DialogueTrigger proximityTrigger = GetComponent<DialogueTrigger>();
+                if (proximityTrigger != null && NarrativeEngine.Instance != null)
+                {
+                    NarrativeEngine.Instance.PlayLine(proximityTrigger.lineToSay, null, null);
+                }
+            }
         }
     }
 }
