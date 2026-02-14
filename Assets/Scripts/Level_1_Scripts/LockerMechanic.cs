@@ -74,7 +74,9 @@ public class LockerMechanic : MonoBehaviour
             interactionPromptUI.SetActive(isPlayerNearby && !isHiding);
         }
 
-        if (isPlayerNearby && playerObject != null && Input.GetKeyDown(interactKey))
+        // FIX: If we are hiding, we don't care about 'isPlayerNearby' 
+        // because we are ALREADY inside the locker!
+        if ((isPlayerNearby || isHiding) && playerObject != null && Input.GetKeyDown(interactKey))
         {
             if (isHiding) StartCoroutine(ExitLockerRoutine());
             else StartCoroutine(EnterLockerRoutine());
@@ -205,6 +207,13 @@ public class LockerMechanic : MonoBehaviour
         if (playerObject == null) return;
         if (playerScript != null) playerScript.enabled = isVisible;
         if (playerSprite != null) playerSprite.enabled = isVisible;
+
+        // --- NEW LOGIC ADDED HERE ---
+        // This disables Kai's hitbox so the monster can't "hit" him and walks right through.
+        Collider2D playerCol = playerObject.GetComponent<Collider2D>();
+        if (playerCol != null) playerCol.enabled = isVisible;
+        // ----------------------------
+
         if (playerRb != null)
         {
             playerRb.velocity = Vector2.zero;
@@ -229,7 +238,12 @@ public class LockerMechanic : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isPlayerNearby = false;
+            // FIX: Only set nearby to false if we aren't currently hiding inside.
+            // This prevents the locker from "forgetting" Kai when his collider is disabled.
+            if (!isHiding)
+            {
+                isPlayerNearby = false;
+            }
         }
     }
 

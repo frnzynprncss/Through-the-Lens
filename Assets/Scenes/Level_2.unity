@@ -7599,7 +7599,6 @@ GameObject:
   - component: {fileID: 1982986181}
   - component: {fileID: 1982986180}
   - component: {fileID: 1982986179}
-  - component: {fileID: 1982986178}
   m_Layer: 0
   m_Name: LevelExit_Trigger
   m_TagString: Untagged
@@ -7607,25 +7606,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1982986178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1982986177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9df6104539d5a0948a995b92221bfb2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextLevelName: Level_3
-  dialogueBox: {fileID: 2094319177}
-  dialogueText: {fileID: 391132889}
-  transitionDialogue: This place looks even worse inside...
-  textSpeed: 0.05
-  waitBeforeLoad: 2
-  transitionSound: {fileID: 8300000, guid: db3ff99e2b4eb9b4f97f839d0081116d, type: 3}
 --- !u!114 &1982986179
 MonoBehaviour:
   m_ObjectHideFlags: 0
